@@ -18,20 +18,22 @@ all internal/infrastructure references. Copy it into your own projects and adapt
 | `.opencode/agents/` | Symlinks → `.agents/agents/*.md` (opencode reads agents from here) |
 | `.opencode/commands/` | Symlinks → `.agents/commands/*.md` (opencode reads commands from here) |
 | `scripts/` | `watch-ci.sh` (watch a GitHub Actions run to terminal state) and `watch-git.sh` (observe a detached commit/push drive, restart when stuck/failed) |
+| `opencode.jsonc` | OpenCode project config — sets the default session agent to the shipped `orchestrator` primary |
 
 ## How to use
 
 1. Copy this tree into a new project.
 2. Fill the `<PLACEHOLDER>` tokens in `AGENTS.md`, then adapt + trim it for your project.
-3. Edit content under `.agents/` — it is the canonical store. The `.opencode/` symlinks
+3. Start opencode — the session defaults to the `orchestrator` primary agent (see `opencode.jsonc`).
+4. Edit content under `.agents/` — it is the canonical store. The `.opencode/` symlinks
    make opencode pick up agents and commands with zero copy: change
    `.agents/agents/*.md` or `.agents/commands/*.md` and the next opencode session sees it.
    Skills need no symlink — opencode auto-discovers `.agents/skills` (each skill is a
    directory containing a `SKILL.md`).
-4. If you dislike symlinks, replace the `.opencode/` entries with real copies of the
+5. If you dislike symlinks, replace the `.opencode/` entries with real copies of the
    `.agents/` files — that trades single-source-of-truth for tool-portability.
-5. `chmod +x scripts/*.sh`.
-6. Adapt/trim as needed — this is a starting kit, not a contract.
+6. `chmod +x scripts/*.sh`.
+7. Adapt/trim as needed — this is a starting kit, not a contract.
 
 > **Models:** agent frontmatter `model:` tokens (e.g. `gateway/deepseek-v4-flash`) are
 > example values from the source project. Replace them with your own provider/model, or
