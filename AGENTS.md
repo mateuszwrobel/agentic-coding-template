@@ -22,6 +22,15 @@ Subagents MUST be launched with an explicit approved model (`<SUBAGENT_MODEL>`).
 
 When gathering project info, do not read all files at once — search the most probable location first, then expand only if needed.
 
+## Project layout
+
+- Content lives in `.agents/`: `agents/` (markdown agent defs), `skills/` (each skill is
+  `<id>/SKILL.md`), `commands/` (prompt templates).
+- opencode loads agents + commands from `.opencode/` — committed symlinks into `.agents/`
+  (single source of truth, no duplication); skills are auto-discovered from `.agents/skills`.
+- Keep every new agent/command/skill in `.agents/` (skills in `<id>/SKILL.md` dir form).
+  If opencode needs explicit wiring, add a symlink under `.opencode/`.
+
 ## Communication style
 
 Caveman mode (Full level):
@@ -40,7 +49,7 @@ Never estimate lines of code, time, or effort. Describe changes in terms of what
 
 ## Planning
 
-Behavior-first planning — workplan skill in `skills/tdd-workplan.md`.
+Behavior-first planning — workplan skill in `.agents/skills/tdd-workplan/SKILL.md`.
 - Do not load every file to get context; modular architecture means one module suffices.
 - Do not overcomplicate plans. Build only what is explicitly requested.
 - Expanding scope, adding features, or "fallback" options — ASK FIRST.
@@ -76,7 +85,7 @@ Trunk-based development on `<DEFAULT_BRANCH>`. No long-lived branches, no PRs fo
 
 - Before/while working, check CI of `<DEFAULT_BRANCH>` and in-flight PRs: `scripts/watch-ci.sh --list`, `scripts/watch-ci.sh --watch <run-id>`.
 - On failure: triage with `gh run view <run-id> --log-failed` (quote failing lines verbatim), fix, push, re-watch.
-- Watch waits ALWAYS get deadlines. Long watches/drives launch detached (`setsid nohup`, sentinel protocol — see `skills/long-drill.md`).
+- Watch waits ALWAYS get deadlines. Long watches/drives launch detached (`setsid nohup`, sentinel protocol — see `.agents/skills/long-drill/SKILL.md`).
 - Never run CI/watch retry loops as foreground in-tool-call loops.
 - Use `scripts/watch-git.sh` to observe commit/push drives and restart them when stuck or failed.
 
