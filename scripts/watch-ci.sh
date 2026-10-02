@@ -21,10 +21,18 @@
 # Output lines:
 #   MILE <UTC> ...                          phase boundaries
 #   STATE|RUN|<epoch>|status=<s>|conclusion=<c>|url=<u>   per poll
-#   FINAL|VERDICT|<epoch>|conclusion=<c>
+#   STATE|RUN|<epoch>|ghost-gate conclusion=success jobs=0   tool-checked
+#   FINAL|VERDICT|<epoch>|conclusion=<c>|gate=unlocked|ghost-gate
 #
-# Exit: 0 run concluded success; 1 concluded failure/cancelled/timed_out/
-#       startup_failure; 2 usage error; 3 timeout.
+# Ghost-gate rule (TOOL-CHECKED): a success conclusion with ZERO executed jobs
+# (all skipped/absent) gates nothing → GHOST-GATE, exit 1 — never a pass.
+# Chain gates: conclusion=success with real executed jobs means the gate is
+# UNLOCKED for the next stage (gate=unlocked, exit 0) — never a downstream
+# "landed" claim; landing is the ancestry check's job.
+#
+# Exit: 0 success with executed jobs (gate unlocked); 1 GHOST-GATE or a
+#       concluded failure/cancelled/timed_out/startup_failure; 2 usage error;
+#       3 timeout.
 #
 # Deps: gh, jq, GNU date. `set -u`; GIT_* env vars unset at top (a gh/git
 # subprocess must never inherit a stray git-hook env). Every wait is bounded
@@ -59,8 +67,14 @@ Env:
   WATCH_TIMEOUT      global deadline seconds (default 600)
   GH_WATCH_VERBOSE=1 echo raw gh output
 
-Output: MILE <UTC> ...; STATE|RUN|<epoch>|status=<s>|conclusion=<c>|url=<u>; FINAL|VERDICT|...
-Exit: 0 success; 1 concluded failure/cancelled/timed_out/startup_failure; 2 usage; 3 timeout.
+Output: MILE <UTC> ...; STATE|RUN|...; FINAL|VERDICT|...|gate=unlocked|ghost-gate
+Exit: 0 success with executed jobs (gate unlocked); 1 GHOST-GATE or concluded
+      failure/cancelled/timed_out/startup_failure; 2 usage; 3 timeout.
+
+Ghost-gate tool-check (TOOL-CHECKED): a success conclusion with ZERO executed
+jobs (all skipped/absent) gates nothing → GHOST-GATE, exit 1 — never a pass.
+conclusion=success means the gate is UNLOCKED for the next stage, never a
+downstream "landed" claim.
 Deps: gh, jq, GNU date.
 EOF
 }
@@ -97,13 +111,28 @@ resolve_run() {
   echo "$r"
 }
 
+# Tool-checked ghost-gate + chain semantics at terminal state. A success
+# conclusion with ZERO executed jobs gates nothing → GHOST-GATE (never a
+# pass). A success with real executed jobs UNLOCKS the next gate — never a
+# downstream "landed" claim (that is the ancestry check's job). On gh failure
+# the success path is kept — no fabricated ghost verdict.
 verdict_exit() {
-  local conclusion="$1"
+  local run_id="$1" conclusion="$2"
+  if [ "$conclusion" = "success" ]; then
+    local executed
+    executed="$(gh run view "$run_id" --repo "$GH_REPO" --json jobs \
+      --jq '[.jobs[] | select(.status=="completed" and .conclusion=="success")] | length' 2>/dev/null)"
+    if [ -n "$executed" ] && [ "$executed" -eq 0 ]; then
+      echo "STATE|RUN|$(stamp)|ghost-gate conclusion=success jobs=0"
+      echo "FINAL|VERDICT|$(stamp)|conclusion=success|ghost-gate"
+      echo "GHOST-GATE" >&2
+      exit 1
+    fi
+    echo "FINAL|VERDICT|$(stamp)|conclusion=success|gate=unlocked"
+    exit 0
+  fi
   echo "FINAL|VERDICT|$(stamp)|conclusion=$conclusion"
-  case "$conclusion" in
-    success) exit 0 ;;
-    *)       exit 1 ;;
-  esac
+  exit 1
 }
 
 watch_run() {
@@ -128,7 +157,7 @@ watch_run() {
     url=$(jq -r '.url' <<<"$out")
     echo "STATE|RUN|$(stamp)|status=$status|conclusion=$conclusion|url=$url"
     if [ "$status" = "completed" ]; then
-      verdict_exit "$conclusion"
+      verdict_exit "$run_id" "$conclusion"
     fi
     if [ "$(stamp)" -ge "$deadline" ]; then
       mile "TIMEOUT after ${WATCH_TIMEOUT}s (status=$status)"
@@ -160,7 +189,7 @@ until_done() {
     html_url=$(jq -r '.html_url' <<<"$out")
     echo "STATE|RUN|$(stamp)|status=$status|conclusion=$conclusion|url=$html_url"
     if [ "$status" = "completed" ]; then
-      verdict_exit "$conclusion"
+      verdict_exit "$run_id" "$conclusion"
     fi
     if [ "$(stamp)" -ge "$deadline" ]; then
       mile "TIMEOUT after ${WATCH_TIMEOUT}s (status=$status)"

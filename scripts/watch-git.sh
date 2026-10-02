@@ -3,8 +3,9 @@
 #
 # Observes a detached drive script (a commit/push ladder) that follows the
 # sentinel protocol: per-attempt `<loop>-<N>.log` plus an exit-code file
-# `<loop>-<N>.done`, and ONE `<loop>.final` sentinel holding the landed HEAD
-# hash on success or the literal `FAILED`. The watcher polls sentinel files /
+# `<loop>-<N>.done`, and ONE `<loop>.final` sentinel holding the HEAD hash the
+# drive pushed (UNLOCKS the next gate — landing is verified, never assumed) or
+# the literal `FAILED`. The watcher polls sentinel files /
 # process liveness with hard deadlines, and can RE-LAUNCH the drive script
 # (detached) when stuck or failed.
 #
@@ -14,9 +15,13 @@
 #                [--max-restarts <N>] [--progress-gap <secs>] [--log <path>]
 #
 # Behavior — every poll (every POLL secs, default 20):
-#   (a) .final exists with a hash → VERIFIED-LANDED — optionally confirm the
-#       hash is an ancestor of the remote default branch (`git fetch` +
-#       `git merge-base --is-ancestor`), else NOT-ON-TIP → exit 0
+#   (a) .final exists with a hash → the gate is UNLOCKED for the next stage.
+#       Landing is proven ancestry-first: `git fetch` + `git merge-base
+#       --is-ancestor` against origin/$DEFAULT_BRANCH. Verified ancestor →
+#       success (landed=verified); not-on-tip → unlocked-not-landed (exit 0);
+#       fetch failed → verdict unlocked, landed=unverified (exit 0). The
+#       sentinel alone NEVER proves landing, and a failed fetch is never
+#       success.
 #   (b) .final == FAILED → restart decision
 #   (c) drive process dead AND no .final → STUCK → restart decision
 #   (d) no .final and no fresh .done / log mtime within --progress-gap
@@ -31,10 +36,11 @@
 #   MILE <UTC> ...                    phase boundaries
 #   WATCHER|STATE|<epoch>|detail      per poll
 #   WATCHER|RESTART|<epoch>|attempt=N per relaunch
-#   WATCHER|VERDICT|<epoch>|success|stuck|failed|timeout
+#   WATCHER|VERDICT|<epoch>|success|unlocked|stuck|failed|timeout
+#                                    (unlocked: gate open; landed=no|unverified)
 #
-# Exit: 0 success/landed; 1 stuck or failed after restart budget; 2 usage;
-#       4 timeout.
+# Exit: 0 landed or unlocked (the drive finished its job); 1 stuck or failed
+#       after restart budget; 2 usage; 4 timeout.
 #
 # Scratch advice: keep the drive script, its logs/sentinels and this watcher's
 # log under /var/tmp (root FS). /tmp is tmpfs (RAM) — a restart wipes it and
@@ -68,8 +74,13 @@ usage() {
 watch-git.sh <drive-script> [options]
 
 Observe a detached commit/push drive (sentinel protocol: <loop>-<N>.log,
-<loop>-<N>.done, <loop>.final = landed HEAD hash or FAILED); restart it when
+<loop>-<N>.done, <loop>.final = pushed HEAD hash or FAILED); restart it when
 stuck or failed.
+
+A .final hash UNLOCKS the next gate — it never proves landing. LANDED is
+proven ancestry-first: git fetch + git merge-base --is-ancestor against
+origin/$DEFAULT_BRANCH. Fetch failure → verdict unlocked (landed=unverified),
+never success.
 
 Options:
   --final <path>        sentinel path (default: <drive-script>.final)
@@ -82,7 +93,8 @@ Options:
   --log <path>          append drive + relaunch output here
 
 Output: MILE <UTC> ...; WATCHER|STATE|...; WATCHER|RESTART|...; WATCHER|VERDICT|...
-Exit: 0 success/landed; 1 stuck/failed after restart budget; 2 usage; 4 timeout.
+Exit: 0 landed or unlocked (drive finished its job; unlocked = gate open,
+      landing not proven); 1 stuck/failed after restart budget; 2 usage; 4 timeout.
 Deps: bash + coreutils + git (for ancestor verification).
 EOF
 }
@@ -173,22 +185,26 @@ while :; do
     exit 4
   fi
 
-  # (a) landed hash in .final → done
+  # (a) .final holds a hash → the gate is UNLOCKED for the next stage. The
+  #     sentinel alone never proves landing — landing is ancestry-first
+  #     (fetch + merge-base --is-ancestor), and a failed fetch is never success.
   if [ -f "$FINAL" ]; then
     v="$(cat "$FINAL")"
     if is_hash "$v"; then
       if git fetch origin >/dev/null 2>&1; then
         if git merge-base --is-ancestor "$v" "origin/$DEFAULT_BRANCH" 2>/dev/null; then
-          echo "WATCHER|VERDICT|$(stamp)|success|hash=$v"
-        else
-          echo "WATCHER|STATE|$(stamp)|NOT-ON-TIP hash=$v (not ancestor of origin/$DEFAULT_BRANCH)"
-          echo "WATCHER|VERDICT|$(stamp)|success|hash=$v"
+          echo "WATCHER|VERDICT|$(stamp)|success|hash=$v|landed=verified"
+          mile "VERIFIED-LANDED $v"
+          exit 0
         fi
-      else
-        echo "WATCHER|STATE|$(stamp)|fetch-failed; trusting sentinel hash=$v"
-        echo "WATCHER|VERDICT|$(stamp)|success|hash=$v"
+        echo "WATCHER|STATE|$(stamp)|unlocked-not-landed hash=$v (not ancestor of origin/$DEFAULT_BRANCH)"
+        echo "WATCHER|VERDICT|$(stamp)|unlocked|hash=$v|landed=no"
+        mile "UNLOCKED $v (not on tip)"
+        exit 0
       fi
-      mile "VERIFIED-LANDED $v"
+      echo "WATCHER|STATE|$(stamp)|unlocked-unverified hash=$v (fetch failed; landing not proven)"
+      echo "WATCHER|VERDICT|$(stamp)|unlocked|hash=$v|landed=unverified"
+      mile "UNLOCKED $v (landing unverified)"
       exit 0
     fi
     if [ "$v" = "FAILED" ]; then

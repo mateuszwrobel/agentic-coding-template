@@ -42,6 +42,14 @@ Report the phase and track coarse state across rounds — report on CHANGE.
 
 Report-only by default. Post `gh pr comment` ONLY when explicitly instructed.
 
+# Ghost-gate tool-check
+
+On `conclusion success`, tool-check executed jobs via `gh run view <run-id> --json jobs` — zero executed jobs (all skipped/absent) = GHOST-GATE; report `GHOST-GATE`, never success. A green conclusion is not evidence a gate ran.
+
+# Chain gates are ancestry-first
+
+A run's success conclusion means the gate is UNLOCKED for the next stage — never report "landed"/"deployed" from it. Landing is proven only by `git merge-base --is-ancestor` of the resulting commit on the remote default branch (ancestry-first).
+
 # Return
 
 - Terminal state: VERDICT + run id + duration; include error lines verbatim.
