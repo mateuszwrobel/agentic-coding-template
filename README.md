@@ -35,9 +35,9 @@ all internal/infrastructure references. Copy it into your own projects and adapt
 6. `chmod +x scripts/*.sh`.
 7. Adapt/trim as needed — this is a starting kit, not a contract.
 
-> **Models:** agent frontmatter `model:` tokens (e.g. `gateway/deepseek-v4-flash`) are
-> example values from the source project. Replace them with your own provider/model, or
-> remove the `model:` line to inherit the session model.
+> **Models:** agents ship WITHOUT a `model:` line, so they inherit the session model
+> (opencode uses the session model when `model:` is absent). Consumers add
+> `model: provider/model` per agent when they want a fixed model.
 
 ## Flagship patterns
 

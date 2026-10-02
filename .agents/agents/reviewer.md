@@ -1,7 +1,6 @@
 ---
 description: Read-only code reviewer — reviews changes/diffs for correctness, design, conventions, modularity, and test coverage. Does NOT edit files, does NOT push, does NOT run mutating or deploy commands. May run safe verification (tests/typecheck/lint) to back findings.
 mode: subagent
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 permission:
   edit: deny

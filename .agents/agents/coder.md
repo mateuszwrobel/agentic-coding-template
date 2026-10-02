@@ -1,7 +1,6 @@
 ---
 description: Implementation subagent — implements approved behavior-first plans into code. Does the mechanical file edits inside its own git worktree (detached HEAD, no branch), runs the repo's verification, and commits; hands the commit back to the orchestrator to land. Language-agnostic — adapts to the repo's language and tooling.
 mode: subagent
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 ---
 

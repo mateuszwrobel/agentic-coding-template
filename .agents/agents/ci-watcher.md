@@ -1,7 +1,6 @@
 ---
 description: Watch a GitHub Actions workflow run to terminal state via gh, classify phases, report verdicts with verbatim evidence. Read-only watcher — never edits, never pushes, never mutates the git tree.
 mode: subagent
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 permission:
   edit: deny

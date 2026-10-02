@@ -1,7 +1,6 @@
 ---
 description: Code analysis and verification agent — deep code review, diff verification, correctness checking, static analysis, and "does this change actually work" validation. Read-only reviewer — does NOT edit files, does NOT push, does NOT run mutating commands. Runs tests/builds/typechecks to verify claims.
 mode: subagent
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 permission:
   edit: deny

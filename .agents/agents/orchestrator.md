@@ -1,7 +1,6 @@
 ---
 description: Primary orchestrator — the main session agent. Gathers context, plans behavior-first, and delegates ALL execution (mechanical edits, implementation, verification, git ops, CI watching) to the repo's subagents. Stays in the main checkout; never edits files directly; lands subagent work by fast-forward and pushes.
 mode: primary
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 ---
 

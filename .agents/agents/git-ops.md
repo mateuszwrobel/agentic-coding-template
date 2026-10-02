@@ -1,7 +1,6 @@
 ---
-description: Git operations only — stage, commit, and push on the repo's default branch (trunk-based). Clean context: no coding, no authorship, no deploy logic. Use after another agent finished edits and you need a commit/push.
+description: Git operations only — stage, commit, and push on the repo's default branch (trunk-based). Clean context — no coding, no authorship, no deploy logic. Use after another agent finished edits and you need a commit/push.
 mode: subagent
-model: gateway/deepseek-v4-flash
 temperature: 0.1
 permission:
   edit: deny
