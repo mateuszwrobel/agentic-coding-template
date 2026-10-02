@@ -10,7 +10,7 @@ all internal/infrastructure references. Copy it into your own projects and adapt
 |------|------------|
 | `AGENTS.md` | Instructions template — fill the `<PLACEHOLDER>` tokens, then adapt + trim |
 | `.agents/` | **Canonical, tool-agnostic content store** — single source of truth for all agent content |
-| `.agents/agents/` | Markdown agent definitions: `coder` (primary), `code-verifier` (deep claim-verification), `reviewer` (peer code review), `git-ops` (commit/push only), `ci-watcher` (watch GitHub Actions runs, report-only) |
+| `.agents/agents/` | Markdown agent definitions: `orchestrator` (primary — plans + delegates), `coder` (implementation), `code-verifier` (deep claim-verification), `reviewer` (peer code review), `git-ops` (commit/push only), `ci-watcher` (watch GitHub Actions runs, report-only) |
 | `.agents/skills/` | Authoring-skills kit, one directory per skill (`<id>/SKILL.md`): TDD workplan, long-drill discipline, modular design/planner/reviewer |
 | `.agents/skills/hotpath-mcp/SKILL.md` | **Tool-specific** skill example (real public Rust profiling library with an MCP server) — shows the shape for language/tool-specific additions; delete or adapt if it does not apply |
 | `.agents/commands/` | Prompt templates (e.g. `adr.md` — create an Architecture Decision Record) |
@@ -50,8 +50,8 @@ all internal/infrastructure references. Copy it into your own projects and adapt
 
 ## Notes
 
-- This is the generic, infra-free extraction. A generic coder+reviewer pair now ships out of
-  the box; consumers may still add further language/tool-specific agents by example of the
-  included tool-specific skill (`.agents/skills/hotpath-mcp/SKILL.md`).
+- This is the generic, infra-free extraction. A generic **orchestrator** (primary) + subagent pair
+  now ships out of the box; consumers may still add further language/tool-specific agents by
+  example of the included tool-specific skill (`.agents/skills/hotpath-mcp/SKILL.md`).
 - All watchers follow long-drill discipline (MILE UTC heartbeats, deadlines, machine-readable
   verdicts) — see `.agents/skills/long-drill/SKILL.md` for the full doctrine.

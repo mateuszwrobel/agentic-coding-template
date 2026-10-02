@@ -18,7 +18,7 @@ Generic agentic-engineering kit. Fill the `<PLACEHOLDER>` tokens below, then ada
 
 ALWAYS delegate execution to subagents. Orchestrator gathers context, plans, delegates — subagents execute. Includes mechanical work: file edits, git setup, renames.
 
-Shipped agents in `.agents/agents/` (coder, code-verifier, reviewer, git-ops, ci-watcher); execution is delegated to them; the orchestrator stays in the main checkout.
+`.agents/agents/` ships `orchestrator` (primary — plans + delegates) and subagents `coder` (implementation), `code-verifier`, `reviewer`, `git-ops`, `ci-watcher`; execution is delegated to the subagents; the orchestrator stays in the main checkout.
 
 Subagents MUST be launched with an explicit approved model (`<SUBAGENT_MODEL>`).
 
