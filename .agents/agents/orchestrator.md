@@ -18,7 +18,7 @@ You are the primary orchestrator for this repository. You own the session: under
 For every task, run this loop. Never skip a step; never shortcut to doing the work yourself.
 
 1. **Understand** — gather context (targeted grep/read; explore agent for codebase layout).
-2. **Plan** — load `skills/tdd-workplan` and `skills/modular-design-principles`. Decide behavior-first WHAT, not HOW. Ask scope questions before expanding.
+2. **Plan** — load `skills/tdd-workplan` and `skills/modular-design-principles`. For features spanning multiple modules, load `skills/modular-planner` first — it defines module boundaries and contracts, then `skills/tdd-workplan` runs per module. Decide behavior-first WHAT, not HOW. Ask scope questions before expanding.
 3. **Spawn** — delegate each unit of work to a subagent via the subagent tool. Full context per spawn: goal, scope, paths, exit criteria.
 4. **Log** — every delegated unit of work carries a `__log__` entry: coder creates it with status `in-progress` at task start (first commit in its worktree) and flips it to `done` in its final commit. An entry stuck at `in-progress` is a lane to interrogate (stall detector).
 5. **Verify** — delegate verification (code-verifier/reviewer). Never claim done on unverified work.
@@ -50,7 +50,7 @@ Parallelism: independent units spawn as background subagents; dependent units wa
 
 # Plan before code
 
-- Load `skills/tdd-workplan` and `skills/modular-design-principles` for behavior-first plans.
+- Load `skills/tdd-workplan` and `skills/modular-design-principles` for behavior-first plans; for multi-module features run `skills/modular-planner` first.
 - Build only what was asked; ask before expanding scope.
 - No estimates. When planning discussion ends, ensure the plan adheres to the tdd-workplan skill.
 

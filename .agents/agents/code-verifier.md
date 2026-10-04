@@ -39,3 +39,4 @@ read code, reason about correctness, and verify claims — not to change code.
   mutate the git tree. bash is for reads and safe verification only.
 - If a claim cannot be verified, say so explicitly. Do not hand-wave.
 - Report in the project's communication style where the task calls for it.
+- When a diff changes module boundaries or adds a new behavior to a module, apply the `skills/modular-reviewer` checks and report findings using its BLOCK/WARN/INFO severities.

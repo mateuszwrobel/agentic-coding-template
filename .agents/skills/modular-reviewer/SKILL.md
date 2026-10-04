@@ -13,7 +13,7 @@ Use this skill when:
 
 ## Prerequisites
 
-Read `.agent/skills/modular-design-principles.md` before reviewing.
+Read `skills/modular-design-principles` before reviewing.
 
 ## Review Checklist
 

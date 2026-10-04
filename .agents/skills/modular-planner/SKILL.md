@@ -13,12 +13,12 @@ Use this skill when:
 
 ## Prerequisites
 
-Read `.agent/skills/modular-design-principles.md` before planning.
+Read `skills/modular-design-principles` before planning.
 
 ## Workflow
 
 1. **This skill runs first** — define module boundaries and contracts
-2. **Then `tdd-workplan.md` runs per module** — create a TDD implementation plan for each module independently
+2. **Then `skills/tdd-workplan` runs per module** — create a TDD implementation plan for each module independently
 
 ## Planning Steps
 
@@ -103,7 +103,7 @@ Order modules so that:
 - Each module can be tested independently
 - Integration between modules is tested after individual modules work
 
-Then create a TDD workplan (see `tdd-workplan.md`) per module.
+Then create a TDD workplan (see the `skills/tdd-workplan` skill) per module.
 
 ## Validation Checklist
 
@@ -156,5 +156,5 @@ Each is independently testable, independently rewritable. `UploadModule` uses si
 
 ## Output
 
-Create a workplan file per module using the TDD workplan template (`tdd-workplan.md`).
+Create a workplan file per module using the TDD workplan template at `.agents/skills/tdd-workplan/WORKPLAN_TEMPLATE.md`.
 Each workplan must be concrete enough that a coder agent (including small models) can implement the module independently, without needing to read other modules' internals.
