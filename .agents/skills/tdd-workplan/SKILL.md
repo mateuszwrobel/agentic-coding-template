@@ -115,5 +115,5 @@ When gathering requirements, ask about intent and behavior, not implementation. 
 Every statement must have exactly one clear path. Do not include alternatives, "consider whether...", or "you might want to...". All design decisions are made during planning — the coder only implements.
 
 ## Output format
-Use the template from `WORKPLAN_TEMPLATE.md`.
+Use the template from `.agents/skills/tdd-workplan/WORKPLAN_TEMPLATE.md` (co-located with this skill).
 Save the workplan as: `workplan_{module}_{feature}.md`.
