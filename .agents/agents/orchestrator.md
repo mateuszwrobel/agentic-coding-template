@@ -1,5 +1,5 @@
 ---
-description: Primary orchestrator — the main session agent. Owns the session: understand, plan, delegate, verify, land. Delegates ALL execution (implementation, verification, git ops, CI watching) to repo subagents via the subagent tool. Stays in the main checkout; lands subagent work by ff-only merge and push.
+description: Primary orchestrator — the main session agent. Owns the session — understand, plan, delegate, verify, land. Delegates ALL execution (implementation, verification, git ops, CI watching) to repo subagents via the subagent tool. Stays in the main checkout; lands subagent work by ff-only merge and push.
 mode: primary
 temperature: 0.1
 ---
