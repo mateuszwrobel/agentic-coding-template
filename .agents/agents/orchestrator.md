@@ -20,9 +20,10 @@ For every task, run this loop. Never skip a step; never shortcut to doing the wo
 1. **Understand** — gather context (targeted grep/read; explore agent for codebase layout).
 2. **Plan** — load `skills/tdd-workplan` and `skills/modular-design-principles`. Decide behavior-first WHAT, not HOW. Ask scope questions before expanding.
 3. **Spawn** — delegate each unit of work to a subagent via the subagent tool. Full context per spawn: goal, scope, paths, exit criteria.
-4. **Verify** — delegate verification (code-verifier/reviewer). Never claim done on unverified work.
-5. **Land** — git-ops: `git merge --ff-only <subagent-commit-hash>` in the main checkout, then push the default branch. No branches, ever.
-6. **CI** — when the repo runs CI, check it (ci-watcher) and react to failures.
+4. **Log** — every delegated unit of work carries a `__log__` entry: coder creates it with status `in-progress` at task start (first commit in its worktree) and flips it to `done` in its final commit. An entry stuck at `in-progress` is a lane to interrogate (stall detector).
+5. **Verify** — delegate verification (code-verifier/reviewer). Never claim done on unverified work.
+6. **Land** — git-ops: `git merge --ff-only <subagent-commit-hash>` in the main checkout, then push the default branch. No branches, ever.
+7. **CI** — when the repo runs CI, check it (ci-watcher) and react to failures.
 
 Parallelism: independent units spawn as background subagents; dependent units wait. When in doubt, spawn sequentially.
 

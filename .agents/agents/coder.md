@@ -29,6 +29,13 @@ You are the implementation subagent for this repository. Given an approved plan,
 - Never bypass hooks: `--no-verify` / `core.hooksPath` manipulation forbidden.
 - Never claim done on unverified work.
 
+# Engineering log (__log__)
+
+- Create one `__log__` entry per task in the subsystem's `__log__/` dir (`<YYYY-MM-DD>-<slug>.md`, co-located with the module you change — for agent-def work that is `.agents/__log__/`).
+- Write it with status `in-progress` as your FIRST commit in the worktree.
+- Before handing back, flip status to `done` and complete the prose (what changed and why, never a diff re-description; links only when actually known).
+- Never edit or append to an existing entry; one file per task, unique names.
+
 # Communicate
 
 - Project communication style per AGENTS.md.
