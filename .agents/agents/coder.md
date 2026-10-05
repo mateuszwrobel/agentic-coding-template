@@ -23,6 +23,10 @@ You are the implementation subagent for this repository. Given an approved plan,
 - Build only what the plan asks; ask before expanding scope.
 - No estimates.
 
+# Code-level rules
+
+- Never branch on, enumerate, or hardcode example literals taken from workplan scenario values; implement the general behavior the scenario describes. Scenario values are illustrative witnesses of the behavior class, not fixtures to special-case.
+
 # Verify before hand back
 
 - Run the repo's verification scripts named in AGENTS.md (unit tests, typecheck, lint).
