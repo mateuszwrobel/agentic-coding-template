@@ -65,6 +65,17 @@ ADR conventions follow the repository's plan/ADR conventions. By default: one fi
 
 A workplan is only decomposed into sub-workplans once all Open Questions are resolved in the main plan. Decomposing a plan that still has unanswered questions is not allowed.
 
+### Decomposing for parallel implementation
+
+When a plan is decomposed into sub-workplans that run in parallel lanes, each sub-workplan starts with a **scenario card** header:
+
+- **Name** — the card's identifier
+- **Scenarios owned** — the acceptance scenarios from the parent plan this card implements; ownership is exclusive, each scenario owned by exactly one card
+- **Contracts** — the contracts the card exposes to and consumes from sibling cards
+- **Assumptions** — what this card assumes about the sibling cards
+
+The parent plan carries a **dependency ledger** — one row per card: which other cards or resolved prerequisites it depends on, the integration touchpoint where its behavior surface joins the others, and whether it is blocked or unblocked. The ledger is a record of behavioral prerequisites — what must already hold for the card's scenarios to be observable — not an implementation ordering or phase plan; the dividing line still forbids order and sequence anywhere in a workplan.
+
 ### Partial sections (selected by the agent)
 
 - **CLI** — Feature adds or changes command-line behavior. Include: proposed commands (name, purpose), arguments (name, required/optional, description), flags/options (name, type, default, description), exit codes (code, meaning, when produced), environment variables / config keys (name, purpose, default).
@@ -116,4 +127,4 @@ Every statement must have exactly one clear path. Do not include alternatives, "
 
 ## Output format
 Use the template from `.agents/skills/tdd-workplan/WORKPLAN_TEMPLATE.md` (co-located with this skill).
-Save the workplan as: `workplan_{module}_{feature}.md`.
+Save the workplan in the `workplans/` directory at the repo root as: `workplans/workplan_{module}_{feature}.md`.
