@@ -105,6 +105,10 @@ Order modules so that:
 
 Then create a TDD workplan (see the `skills/tdd-workplan` skill) per module.
 
+### Step 8: Decompose for parallel lanes
+
+When the module workplans will run in parallel lanes, decompose per the `skills/tdd-workplan` "Decomposing for parallel implementation" section: give each lane's sub-workplan a scenario card (name, exclusively owned acceptance scenarios, contracts exposed/consumed, assumptions about siblings), and give the parent plan a dependency ledger — one row per card with depends-on, integration touchpoint, blocked/unblocked. Keep the ledger behavioral prerequisites only, never an implementation ordering.
+
 ## Validation Checklist
 
 Before finalizing, verify every module passes these checks in order. If any check fails, fix it before continuing:
