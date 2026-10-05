@@ -2,7 +2,7 @@
 
 ```json
 {
-  "status": "in-progress"
+  "status": "done"
 }
 ```
 
