@@ -108,6 +108,26 @@ Then [observable result]
 ### Data Flow
 [How data enters and leaves this store — which API contract fields the schema must satisfy, and which queries serve the behavior.]
 
+## UI
+<!-- Include when the feature renders or manipulates a visible interface (page, screen, components). -->
+
+### Mockups
+<!-- One mockup per observable page state. States come from the Acceptance Criteria scenarios / user journeys — none invented. Mockups are design references for later UI work — not pixel contracts, never binding acceptance criteria. -->
+
+| Page State | Mockup | Reference (file/prompt path) |
+|------------|--------|------------------------------|
+
+<!-- Mockup source: if the user pointed at an image-generation model source during planning, record it in Decisions and render mockups with it, storing the exact prompts/inputs verbatim beside the mockups so every render is reproducible from the repo. No source named → simple markdown mockups. -->
+
+### UI Harness Inventory
+<!-- The planner discovers what exists by researching the codebase, never by asking the user. A missing harness is planned as behavior in its own right (feeding Decisions and Modularity); an existing one is referenced. -->
+
+| Surface | Present | Where | Plan Action |
+|---------|---------|-------|-------------|
+| Component exploration (component gallery; the project's own equivalent counts) | yes/no | [path or URL] | reference / extend / create |
+| Design system (single source of visual tokens + named component primitives) | yes/no | [path or URL] | reference / extend / create |
+| E2E (browser-driven scenarios) | yes/no | [path or URL] | reference / extend / create |
+
 ## Modularity
 <!-- Always included. -->
 

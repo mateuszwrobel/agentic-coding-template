@@ -81,6 +81,7 @@ The parent plan carries a **dependency ledger** — one row per card: which othe
 - **CLI** — Feature adds or changes command-line behavior. Include: proposed commands (name, purpose), arguments (name, required/optional, description), flags/options (name, type, default, description), exit codes (code, meaning, when produced), environment variables / config keys (name, purpose, default).
 - **API** — Feature exposes or consumes an interface with a contract. Include: proposed endpoints (method, path, purpose), a contract per endpoint (request headers/body schema, success response status + body, error responses), and the data models/DTOs that cross the boundary (fields, types, constraints).
 - **Database** — Feature persists or reads structured data. First state what data store exists today. If a store exists: analyze whether extending it (new tables, new columns, new indexes) satisfies the feature, and decide — only propose a separate data store when extension is wrong. If no store exists: propose one. Include: proposed tables (name, columns, types, constraints), relationships, and how data enters and leaves (which API contract fields the schema must satisfy and which queries serve the behavior).
+- **UI** — Feature renders or manipulates a visible interface (page, screen, components). Include: **Mockups** — one per observable page state, states taken from the Acceptance Criteria scenarios / user journeys, none invented. If the user pointed at an image-generation model source during planning, record the source in Decisions and render the mockups with it, storing the exact prompts/inputs verbatim beside the mockups so every render is reproducible from the repo; no source named → simple markdown mockups. Mockups are design references for later UI work — not pixel contracts, never binding acceptance criteria. And **UI harness surfaces** — three surfaces must be accounted for: a component exploration surface (a component gallery — the project's own equivalent counts), a design system surface (a single source of visual tokens plus named component primitives), and an e2e surface (browser-driven scenarios). The planner discovers what exists by researching the codebase, never by asking the user: a missing harness is planned as behavior in its own right (feeding Decisions and Modularity), an existing one is referenced.
 - **Modularity** — Always included. Analyze whether the feature's behaviors fit existing modules or need new ones, following the modular design principles (one behavior per module, hidden design decision, crossing behaviors, model fit). Then decide the internal architecture style per affected module — DDD, feature-layered, CRUD, procedural — and justify it. State module boundaries: which modules gain behavior, which are new, which existing modules need extraction first.
 
 ### Deciding which partials apply
@@ -89,6 +90,7 @@ Research the codebase, then include:
 - CLI partial — any behavior reaches a command line
 - API partial — any behavior crosses an interface boundary with a contract
 - Database partial — any behavior reads or persists structured data
+- UI partial — any behavior renders or manipulates a visible interface
 - Modularity partial — always
 
 ## Instructions
@@ -101,6 +103,7 @@ Research the codebase, then include:
 - CLI: existing commands, arguments, exit codes, config conventions
 - API: existing endpoints, contracts, schemas
 - Database: existing data stores, tables, schemas
+- UI: existing pages/screens, component and token conventions, component gallery presence, browser-driven test harness presence
 - Modularity: existing modules and their responsibilities
 - Error handling and naming conventions (background context for judgment, not for the workplan body)
 
