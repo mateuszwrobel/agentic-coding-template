@@ -32,6 +32,8 @@ When gathering project info, do not read all files at once — search the most p
   (single source of truth, no duplication); skills are auto-discovered from `.agents/skills`.
 - Keep every new agent/command/skill in `.agents/` (skills in `<id>/SKILL.md` dir form).
   If opencode needs explicit wiring, add a symlink under `.opencode/`.
+- Generated-docs freshness gates: the schema-diagram skill (`.agents/skills/schema-diagram/`)
+  holds the never-rot schema-doc pattern, its pre-commit gate snippet, and a Go/SQLite reference impl.
 
 ## Communication style
 
