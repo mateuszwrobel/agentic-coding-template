@@ -15,7 +15,7 @@ Use this skill when:
 A small tool (own command/package, dev-facing) that:
 1. Creates a throwaway temp database (mktemp dir/file; removed on exit — real data files are never touched).
 2. Opens it through the application's OWN store-open path — the same code path production uses to create/migrate the database. The app owns the schema; the tool copies no schema text.
-3. Introspects the resulting live schema via the dialect's introspection facilities (SQLite: `PRAGMA table_info` / `index_list` / `index_info` / `fk_list` plus the stored DDL in `sqlite_master` for facts pragmas cannot report, e.g. CHECK text, AUTOINCREMENT; other dialects: their catalog/information_schema/reflection equivalents).
+3. Introspects the resulting live schema via the dialect's introspection facilities (SQLite: `PRAGMA table_info` / `index_list` / `index_info` / `foreign_key_list` plus the stored DDL in `sqlite_master` for facts pragmas cannot report, e.g. CHECK text, AUTOINCREMENT; other dialects: their catalog/information_schema/reflection equivalents).
 4. Renders the diagram deterministically so the same schema regenerates byte-identical output every run: tables ordered by name, columns in declaration order, indexes in introspection-result order, no timestamps, no map-iteration order anywhere.
 
 ### b. Task-runner target
@@ -29,7 +29,7 @@ A pre-commit hook (snippet: `resources/pre-commit-schema-gate.sh`) that:
 - Never auto-stages, never mutates the working tree, never bypasses. Comparison reads the working tree, so a schema edit is caught whether or not the author regenerated.
 
 ### d. Committed generated doc
-The generated doc is committed. Its header states it is generated and how: regenerate via the make target, do not edit.
+The generated doc is committed and is tool-owned output — never hand-edited; the make target is the one way it changes.
 
 ## Design decisions worth preserving
 

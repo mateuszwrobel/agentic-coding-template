@@ -14,7 +14,7 @@ pattern inside a Go + SQLite app:
 
 - `main.go` — materializes the schema via `board.Open` on a throwaway temp
   file, reopens it read-only, introspects `sqlite_master` +
-  `table_info`/`index_list`/`index_info`/`fk_list` pragmas, renders
+  `table_info`/`index_list`/`index_info`/`foreign_key_list` pragmas, renders
   deterministic Mermaid erDiagram output; the assignee roster note pulls names
   from `users.Names()` at generation time.
 - `main_test.go` — drives `run` end-to-end and pins the note line byte-quoted,
